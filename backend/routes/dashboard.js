@@ -5,7 +5,7 @@ const monglue = require("../app");
 const session = require("express-session");
 
 function sortByKey(array) {
-  // This works
+  // sort by "accessed"
   return array.sort(function (a, b) {
     var x = a["accessed"];
     var y = b["accessed"];
@@ -13,14 +13,15 @@ function sortByKey(array) {
   });
 }
 
-router.get('/', async function (req, res) {
+router.get("/", async function (req, res) {
   console.log("request received");
   if (req.session.username) {
-    // TODO find from collection then sort
+    // Access tests
     const arr = await monglue.Test.find({});
+    // Send sorted tests w/ code 200
     res.status(200).send(sortByKey(arr));
   } else {
-    // TODO error handling
+    // If user is not logged in, send code 401 w/ message: "Not logged in"
     res.status(401).send({ error: "Not logged in" });
   }
 });
